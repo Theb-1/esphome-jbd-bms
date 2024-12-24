@@ -61,6 +61,7 @@ void JbdBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     }
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
+      ESP_LOGI(TAG, "ESP_GATTC_DISCONNECT_EVT");
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -158,6 +159,7 @@ void JbdBmsBle::update() {
   }
 
   this->send_command(JBD_CMD_READ, JBD_CMD_HWINFO);
+  ESP_LOGI(TAG, "TEST UPDATE()");
 }
 
 void JbdBmsBle::on_jbd_bms_data(const uint8_t &function, const std::vector<uint8_t> &data) {
@@ -166,15 +168,17 @@ void JbdBmsBle::on_jbd_bms_data(const uint8_t &function, const std::vector<uint8
   switch (function) {
     case JBD_CMD_HWINFO:
       this->on_hardware_info_data_(data);
+      ESP_LOGI(TAG, "TEST JBD_CMD_HWINFO");
       this->send_command(JBD_CMD_READ, JBD_CMD_CELLINFO);
       break;
     case JBD_CMD_CELLINFO:
       this->on_cell_info_data_(data);
-      esp_ble_gap_disconnect(this->parent()->get_remote_bda());
-      ESP_LOGI(TAG, "TEST Disconnect");
+      //esp_ble_gap_disconnect(this->parent()->get_remote_bda());
+      ESP_LOGI(TAG, "TEST JBD_CMD_CELLINFO");
       break;
     case JBD_CMD_HWVER:
       this->on_hardware_version_data_(data);
+      ESP_LOGI(TAG, "TEST JBD_CMD_HWVER");
       break;
     case JBD_CMD_MOS:
     case JBD_CMD_EXIT_FACTORY:
