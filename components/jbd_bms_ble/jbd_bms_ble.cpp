@@ -174,6 +174,7 @@ void JbdBmsBle::on_jbd_bms_data(const uint8_t &function, const std::vector<uint8
     case JBD_CMD_CELLINFO:
       this->on_cell_info_data_(data);
       //esp_ble_gap_disconnect(this->parent()->get_remote_bda());
+      this->parent()->disconnect();
       ESP_LOGI(TAG, "TEST JBD_CMD_CELLINFO");
       break;
     case JBD_CMD_HWVER:
