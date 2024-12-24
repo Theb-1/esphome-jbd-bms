@@ -154,6 +154,7 @@ void JbdBmsBle::assemble_(const uint8_t *data, uint16_t length) {
 void JbdBmsBle::update() {
   this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
+    this->parent()->set_auto_connect(true);
     ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str().c_str());
     return;
   }
