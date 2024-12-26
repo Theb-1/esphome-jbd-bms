@@ -91,8 +91,13 @@ void JbdBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
       this->node_state = espbt::ClientState::ESTABLISHED;
 
-      this->send_command(JBD_CMD_READ, JBD_CMD_HWINFO);
+      if (write_register_address_buffer_) != 0 {
+          // send write buffer
+          this->write_register(write_register_address_buffer_, write_register_value_buffer_);
+      }
 
+      this->send_command(JBD_CMD_READ, JBD_CMD_HWINFO);
+      
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
@@ -501,6 +506,18 @@ bool JbdBmsBle::change_mosfet_status(uint8_t address, uint8_t bitmask, bool stat
 }
 
 bool JbdBmsBle::write_register(uint8_t address, uint16_t value) {
+  if (this->node_state != espbt::ClientState::ESTABLISHED) {
+      ESP_LOGW(TAG, "[%s] write_register while disconnected. Buffering and attempting to auto connect", this->parent_->address_str().c_str());
+      this->parent()->set_auto_connect(true);
+      write_register_address_buffer_ = address;
+      write_register_value_buffer_ = value;
+      
+      return 0;
+  }
+
+  write_register_address_buffer_ = 0;
+  write_register_value_buffer_ = 0;
+
   uint8_t frame[9];
   uint8_t data_len = 2;
 
