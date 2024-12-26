@@ -91,7 +91,7 @@ void JbdBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
       this->node_state = espbt::ClientState::ESTABLISHED;
 
-      if (write_register_address_buffer_) != 0 {
+      if (write_register_address_buffer_ != 0) {
           // send write buffer
           this->write_register(write_register_address_buffer_, write_register_value_buffer_);
       }
