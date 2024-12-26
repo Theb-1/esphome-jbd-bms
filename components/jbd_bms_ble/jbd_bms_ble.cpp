@@ -94,6 +94,7 @@ void JbdBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
       if (write_register_address_buffer_ != 0) {
           // send write buffer
           this->write_register(write_register_address_buffer_, write_register_value_buffer_);
+          ESP_LOGW(TAG, "[%s] write_register data found. Sending.", this->parent_->address_str().c_str());
       }
 
       this->send_command(JBD_CMD_READ, JBD_CMD_HWINFO);
