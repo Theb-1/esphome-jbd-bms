@@ -176,6 +176,8 @@ class JbdBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   uint16_t char_command_handle_;
   uint8_t no_response_count_{0};
   uint8_t mosfet_status_{255};
+  uint8_t write_register_address_buffer_; //testing
+  uint16_t write_register_value_buffer_; //testing
 
   void assemble_(const uint8_t *data, uint16_t length);
   void on_cell_info_data_(const std::vector<uint8_t> &data);
